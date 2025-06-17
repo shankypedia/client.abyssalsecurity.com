@@ -17,7 +17,8 @@
     "express-rate-limit": "^6.10.0",
     "helmet": "^7.0.0",
     "express-validator": "^7.0.1",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

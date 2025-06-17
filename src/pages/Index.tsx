@@ -7,7 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { registerSchema, loginSchema } from '@/schemas/auth';
+import type { RegisterForm, LoginForm } from '@/schemas/auth';
 
 const Index = () => {
   const [mode, setMode] = useState<'login' | 'register'>('login');
@@ -52,31 +54,28 @@ const Index = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (mode === 'register') {
-      if (formData.password !== formData.confirmPassword) {
-        toast({
-          title: "Password Mismatch",
-          description: "Passwords do not match. Please try again.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      if (!Object.values(passwordStrength).every(Boolean)) {
-        toast({
-          title: "Weak Password",
-          description: "Please ensure your password meets all requirements.",
-          variant: "destructive"
-        });
-        return;
-      }
-    }
-
     setIsLoading(true);
     
     try {
+      // Client-side validation
       if (mode === 'login') {
+        const loginData: LoginForm = {
+          email: formData.email,
+          password: formData.password,
+          rememberMe: formData.rememberMe
+        };
+        
+        const validation = loginSchema.safeParse(loginData);
+        if (!validation.success) {
+          const firstError = validation.error.errors[0];
+          toast({
+            title: "Validation Error",
+            description: firstError.message,
+            variant: "destructive"
+          });
+          return;
+        }
+
         await login(formData.email, formData.password, formData.rememberMe);
         toast({
           title: "Login Successful",
@@ -84,6 +83,25 @@ const Index = () => {
         });
         navigate('/dashboard');
       } else {
+        const registerData: RegisterForm = {
+          email: formData.email,
+          username: formData.username,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+          acceptTerms: formData.acceptTerms
+        };
+        
+        const validation = registerSchema.safeParse(registerData);
+        if (!validation.success) {
+          const firstError = validation.error.errors[0];
+          toast({
+            title: "Validation Error",
+            description: firstError.message,
+            variant: "destructive"
+          });
+          return;
+        }
+
         await register(formData.email, formData.username, formData.password, formData.acceptTerms);
         toast({
           title: "Account Created Successfully",
@@ -92,9 +110,10 @@ const Index = () => {
         navigate('/dashboard');
       }
     } catch (error: any) {
+      console.error('Authentication error:', error);
       toast({
         title: mode === 'login' ? "Login Failed" : "Registration Failed",
-        description: error.message || "An error occurred. Please try again.",
+        description: error.message || "Unable to connect to server. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -401,7 +420,14 @@ const Index = () => {
                         required
                       />
                       <span className="leading-relaxed">
-                        I agree to the Terms of Service and Privacy Policy
+                        I agree to the{' '}
+                        <Link to="/terms" className="text-violet-400 hover:text-violet-300 underline">
+                          Terms of Service
+                        </Link>
+                        {' '}and{' '}
+                        <Link to="/privacy" className="text-violet-400 hover:text-violet-300 underline">
+                          Privacy Policy
+                        </Link>
                       </span>
                     </label>
                   )}

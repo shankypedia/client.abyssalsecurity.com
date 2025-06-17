@@ -1,26 +1,14 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import { body, validationResult } from 'express-validator';
 import db from '../database.js';
 import { generateToken } from '../middleware/auth.js';
+import { registerSchema, loginSchema, validateRequest } from '../schemas/auth.js';
 
 const router = express.Router();
 
 // Register endpoint
-router.post('/register', [
-  body('email').isEmail().normalizeEmail(),
-  body('username').isLength({ min: 3, max: 30 }).trim(),
-  body('password').isLength({ min: 8 }).matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/),
-], async (req, res) => {
+router.post('/register', validateRequest(registerSchema), async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Validation failed',
-        errors: errors.array()
-      });
-    }
 
     const { email, username, password } = req.body;
 
@@ -86,18 +74,8 @@ router.post('/register', [
 });
 
 // Login endpoint
-router.post('/login', [
-  body('email').isEmail().normalizeEmail(),
-  body('password').notEmpty(),
-], async (req, res) => {
+router.post('/login', validateRequest(loginSchema), async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid credentials'
-      });
-    }
 
     const { email, password } = req.body;
 
