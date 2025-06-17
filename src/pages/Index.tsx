@@ -1,10 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Shield, Eye, EyeOff, Lock, Mail, User, ArrowRight, CheckCircle, Zap, Users, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
   const [mode, setMode] = useState<'login' | 'register'>('login');
@@ -27,6 +29,15 @@ const Index = () => {
     hasSpecial: false
   });
   const { toast } = useToast();
+  const { login, register, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   const checkPasswordStrength = (password: string) => {
     setPasswordStrength({
@@ -63,23 +74,31 @@ const Index = () => {
 
     setIsLoading(true);
     
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
       if (mode === 'login') {
+        await login(formData.email, formData.password);
         toast({
           title: "Login Successful",
           description: "Welcome back to AbyssalSecurity.",
         });
-        window.location.href = '/dashboard';
+        navigate('/dashboard');
       } else {
+        await register(formData.email, formData.username, formData.password);
         toast({
           title: "Account Created Successfully",
-          description: "Welcome to AbyssalSecurity. Please check your email to verify your account.",
+          description: "Welcome to AbyssalSecurity.",
         });
-        setMode('login');
-        setFormData(prev => ({ ...prev, password: '', confirmPassword: '', username: '', acceptTerms: false }));
+        navigate('/dashboard');
       }
-    }, 1500);
+    } catch (error: any) {
+      toast({
+        title: mode === 'login' ? "Login Failed" : "Registration Failed",
+        description: error.message || "An error occurred. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Shield, 
   User, 
@@ -28,18 +28,46 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { toast } = useToast();
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, isLoading, navigate]);
 
   const handleLogout = () => {
+    logout();
     toast({
       title: "Logged Out",
       description: "You have been successfully logged out.",
     });
-    window.location.href = '/';
+    navigate('/');
   };
+
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-950 via-violet-950 to-gray-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-400 mx-auto mb-4"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated
+  if (!isAuthenticated || !user) {
+    return null;
+  }
 
   const menuItems = [
     { icon: Home, label: 'Dashboard', href: '/dashboard', active: true },
@@ -99,8 +127,8 @@ const Dashboard = () => {
               <User className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-white">Daan Scheeper</p>
-              <p className="text-xs text-gray-400">CEO</p>
+              <p className="text-sm font-semibold text-white">{user.username}</p>
+              <p className="text-xs text-gray-400">{user.email}</p>
             </div>
           </div>
         </div>
@@ -155,8 +183,8 @@ const Dashboard = () => {
                   <User className="h-4 w-4 lg:h-5 lg:w-5 text-white" />
                 </div>
                 <div className="hidden md:block">
-                  <p className="text-sm font-semibold text-white">Daan Scheeper</p>
-                  <p className="text-xs text-gray-400">Chief Executive Officer</p>
+                  <p className="text-sm font-semibold text-white">{user.username}</p>
+                  <p className="text-xs text-gray-400">{user.email}</p>
                 </div>
               </div>
             </div>
@@ -170,7 +198,7 @@ const Dashboard = () => {
             <div className="bg-gradient-to-r from-violet-500/10 via-cyan-500/10 to-violet-500/10 rounded-2xl p-6 lg:p-8 border border-white/10 backdrop-blur-sm">
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div className="flex-1">
-                  <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2">Welcome back, Daan!</h2>
+                  <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2">Welcome back, {user.username}!</h2>
                   <p className="text-gray-300 text-base lg:text-lg">Your security infrastructure is operating at peak performance.</p>
                 </div>
                 <div className="hidden md:block">

@@ -1,73 +1,51 @@
-# Welcome to your Lovable project
+# AbyssalSecurity - Client Portal
 
-## Project info
+A secure client portal for AbyssalSecurity's enterprise cybersecurity services.
 
-**URL**: https://lovable.dev/projects/7bab05de-dc2d-47ff-b380-d56585632102
+## Features
 
-## How can I edit this code?
+- **Secure Authentication**: JWT-based login and registration system
+- **Responsive Dashboard**: Modern UI optimized for desktop, tablet, and mobile
+- **Real-time Monitoring**: Security status and threat monitoring interface
+- **Enterprise Grade**: Built with security best practices
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+- **Frontend**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS + shadcn/ui components
+- **Routing**: React Router DOM
+- **State Management**: React Query for server state
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/7bab05de-dc2d-47ff-b380-d56585632102) and start prompting.
+## Development Setup
 
-Changes made via Lovable will be committed automatically to this repo.
+1. Install dependencies:
+```bash
+npm install
+```
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+2. Start development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+3. Build for production:
+```bash
+npm run build
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Deployment
 
-**Use GitHub Codespaces**
+The application is configured for deployment to the subdomain: `client.abyssalsecurity.com`
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Security Features
 
-## What technologies are used for this project?
+- Input validation and sanitization
+- Secure password requirements
+- JWT token-based authentication
+- HTTPS enforcement
+- Security headers implementation
 
-This project is built with:
+## License
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/7bab05de-dc2d-47ff-b380-d56585632102) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Proprietary - AbyssalSecurity Enterprise Solutions
