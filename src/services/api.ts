@@ -17,11 +17,33 @@ export interface AuthResponse {
 
 class ApiService {
   private getAuthHeaders(): HeadersInit {
-    const token = localStorage.getItem('authToken');
+    const token = this.getToken();
     return {
       'Content-Type': 'application/json',
       ...(token && { Authorization: `Bearer ${token}` }),
     };
+  }
+
+  private getToken(): string | null {
+    return localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+  }
+
+  private setToken(token: string, remember: boolean = true): void {
+    if (remember) {
+      localStorage.setItem('authToken', token);
+      sessionStorage.removeItem('authToken'); // Clean up session storage
+    } else {
+      sessionStorage.setItem('authToken', token);
+      localStorage.removeItem('authToken'); // Clean up local storage
+    }
+  }
+
+  private setUser(user: User, remember: boolean = true): void {
+    const storage = remember ? localStorage : sessionStorage;
+    const otherStorage = remember ? sessionStorage : localStorage;
+    
+    storage.setItem('user', JSON.stringify(user));
+    otherStorage.removeItem('user'); // Clean up other storage
   }
 
   private async handleResponse(response: Response) {
@@ -32,7 +54,7 @@ class ApiService {
     return data;
   }
 
-  async register(email: string, username: string, password: string): Promise<AuthResponse> {
+  async register(email: string, username: string, password: string, remember: boolean = true): Promise<AuthResponse> {
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: 'POST',
       headers: this.getAuthHeaders(),
@@ -42,14 +64,14 @@ class ApiService {
     const data = await this.handleResponse(response);
     
     if (data.success && data.token) {
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      this.setToken(data.token, remember);
+      this.setUser(data.user, remember);
     }
     
     return data;
   }
 
-  async login(email: string, password: string): Promise<AuthResponse> {
+  async login(email: string, password: string, remember: boolean = true): Promise<AuthResponse> {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: this.getAuthHeaders(),
@@ -59,8 +81,8 @@ class ApiService {
     const data = await this.handleResponse(response);
     
     if (data.success && data.token) {
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      this.setToken(data.token, remember);
+      this.setUser(data.user, remember);
     }
     
     return data;
@@ -85,15 +107,17 @@ class ApiService {
   logout() {
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('user');
   }
 
   getCurrentUser(): User | null {
-    const userStr = localStorage.getItem('user');
+    const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
     return userStr ? JSON.parse(userStr) : null;
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem('authToken');
+    return !!this.getToken();
   }
 }
 

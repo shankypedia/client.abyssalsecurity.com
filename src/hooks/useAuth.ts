@@ -39,9 +39,9 @@ export const useAuth = () => {
     initAuth();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, remember: boolean = true) => {
     try {
-      const response = await apiService.login(email, password);
+      const response = await apiService.login(email, password, remember);
       if (response.success && response.user) {
         setUser(response.user);
         setIsAuthenticated(true);
@@ -53,9 +53,9 @@ export const useAuth = () => {
     }
   };
 
-  const register = async (email: string, username: string, password: string) => {
+  const register = async (email: string, username: string, password: string, remember: boolean = true) => {
     try {
-      const response = await apiService.register(email, username, password);
+      const response = await apiService.register(email, username, password, remember);
       if (response.success && response.user) {
         setUser(response.user);
         setIsAuthenticated(true);

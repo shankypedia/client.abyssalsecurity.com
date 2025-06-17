@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
-import { Shield, Eye, EyeOff, Lock, Mail, User, ArrowRight, CheckCircle, Zap, Users, Globe } from 'lucide-react';
+import { Shield, Eye, EyeOff, Lock, Mail, User, ArrowRight, CheckCircle, Zap, Users, Globe, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
@@ -76,14 +77,14 @@ const Index = () => {
     
     try {
       if (mode === 'login') {
-        await login(formData.email, formData.password);
+        await login(formData.email, formData.password, formData.rememberMe);
         toast({
           title: "Login Successful",
           description: "Welcome back to AbyssalSecurity.",
         });
         navigate('/dashboard');
       } else {
-        await register(formData.email, formData.username, formData.password);
+        await register(formData.email, formData.username, formData.password, formData.acceptTerms);
         toast({
           title: "Account Created Successfully",
           description: "Welcome to AbyssalSecurity.",
@@ -209,7 +210,7 @@ const Index = () => {
         
         {/* Authentication Card */}
         <div className="w-full max-w-md">
-          <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl min-h-[600px] flex flex-col">
+          <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader className="text-center pb-8">
               <div className="flex justify-center mb-6">
                 <div className="p-4 bg-violet-500/20 rounded-2xl backdrop-blur-sm border border-violet-500/30">
@@ -231,7 +232,7 @@ const Index = () => {
               </p>
             </CardHeader>
             
-            <CardContent className="space-y-6 flex-1 flex flex-col">
+            <CardContent className="space-y-6">
               {/* Mode Toggle */}
               <div className="flex bg-white/10 rounded-xl p-1.5 backdrop-blur-sm border border-white/20">
                 <button
@@ -258,8 +259,7 @@ const Index = () => {
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5 flex-1 flex flex-col justify-between">
-                <div className="space-y-5 flex-1">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Email Field */}
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-200">
@@ -280,33 +280,54 @@ const Index = () => {
                 </div>
 
                 {/* Username Field (Register only) */}
-                <div className="min-h-[80px]">
-                  {mode === 'register' && (
-                    <div className="space-y-2">
-                      <label className="text-sm font-semibold text-gray-200">
-                        Username
-                      </label>
-                      <div className="relative">
-                        <User className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <Input
-                          type="text"
-                          name="username"
-                          value={formData.username}
-                          onChange={handleInputChange}
-                          placeholder="Choose a username"
-                          className="pl-12 h-12 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 backdrop-blur-sm"
-                          required
-                        />
-                      </div>
+                {mode === 'register' && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-gray-200">
+                      Username
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <Input
+                        type="text"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleInputChange}
+                        placeholder="Choose a username"
+                        className="pl-12 h-12 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 backdrop-blur-sm"
+                        required
+                      />
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
                 
                 {/* Password Field */}
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-gray-200">
-                    Password
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-semibold text-gray-200">
+                      Password
+                    </label>
+                    {mode === 'register' && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button type="button" className="text-gray-400 hover:text-gray-300 transition-colors">
+                              <Info className="h-4 w-4" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="left" className="bg-gray-900 border-gray-700 text-white p-3 max-w-xs">
+                            <div className="space-y-2 text-xs">
+                              <div className="font-medium mb-2">Password Requirements:</div>
+                              <PasswordRequirement met={passwordStrength.hasLength} text="At least 8 characters" />
+                              <PasswordRequirement met={passwordStrength.hasUpper} text="One uppercase letter" />
+                              <PasswordRequirement met={passwordStrength.hasLower} text="One lowercase letter" />
+                              <PasswordRequirement met={passwordStrength.hasNumber} text="One number" />
+                              <PasswordRequirement met={passwordStrength.hasSpecial} text="One special character" />
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  </div>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <Input
@@ -326,50 +347,35 @@ const Index = () => {
                       {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
                   </div>
-                  
-                  {/* Password Strength Indicator (Register only) */}
-                  <div className="min-h-[120px]">
-                    {mode === 'register' && formData.password && (
-                      <div className="space-y-2 p-4 bg-white/5 rounded-lg backdrop-blur-sm border border-white/10">
-                        <PasswordRequirement met={passwordStrength.hasLength} text="At least 8 characters" />
-                        <PasswordRequirement met={passwordStrength.hasUpper} text="One uppercase letter" />
-                        <PasswordRequirement met={passwordStrength.hasLower} text="One lowercase letter" />
-                        <PasswordRequirement met={passwordStrength.hasNumber} text="One number" />
-                        <PasswordRequirement met={passwordStrength.hasSpecial} text="One special character" />
-                      </div>
-                    )}
-                  </div>
                 </div>
 
                 {/* Confirm Password Field (Register only) */}
-                <div className="min-h-[80px]">
-                  {mode === 'register' && (
-                    <div className="space-y-2">
-                      <label className="text-sm font-semibold text-gray-200">
-                        Confirm Password
-                      </label>
-                      <div className="relative">
-                        <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <Input
-                          type={showConfirmPassword ? 'text' : 'password'}
-                          name="confirmPassword"
-                          value={formData.confirmPassword}
-                          onChange={handleInputChange}
-                          placeholder="Confirm your password"
-                          className="pl-12 pr-12 h-12 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 backdrop-blur-sm"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
-                        >
-                          {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                        </button>
-                      </div>
+                {mode === 'register' && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-gray-200">
+                      Confirm Password
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <Input
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleInputChange}
+                        placeholder="Confirm your password"
+                        className="pl-12 pr-12 h-12 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 backdrop-blur-sm"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
                 
                 {/* Remember Me / Terms */}
                 <div className="flex items-center justify-between">
@@ -409,9 +415,7 @@ const Index = () => {
                     </button>
                   )}
                 </div>
-                </div>
                 
-                <div className="mt-6">
                 <Button
                   type="submit"
                   disabled={isLoading || (mode === 'register' && !formData.acceptTerms)}
@@ -429,7 +433,6 @@ const Index = () => {
                     </div>
                   )}
                 </Button>
-                </div>
               </form>
             </CardContent>
           </Card>
