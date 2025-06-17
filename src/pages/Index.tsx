@@ -209,7 +209,7 @@ const Index = () => {
         
         {/* Authentication Card */}
         <div className="w-full max-w-md">
-          <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
+          <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl min-h-[600px] flex flex-col">
             <CardHeader className="text-center pb-8">
               <div className="flex justify-center mb-6">
                 <div className="p-4 bg-violet-500/20 rounded-2xl backdrop-blur-sm border border-violet-500/30">
@@ -231,7 +231,7 @@ const Index = () => {
               </p>
             </CardHeader>
             
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 flex-1 flex flex-col">
               {/* Mode Toggle */}
               <div className="flex bg-white/10 rounded-xl p-1.5 backdrop-blur-sm border border-white/20">
                 <button
@@ -258,7 +258,8 @@ const Index = () => {
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-5 flex-1 flex flex-col justify-between">
+                <div className="space-y-5 flex-1">
                 {/* Email Field */}
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-200">
@@ -279,25 +280,27 @@ const Index = () => {
                 </div>
 
                 {/* Username Field (Register only) */}
-                {mode === 'register' && (
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-200">
-                      Username
-                    </label>
-                    <div className="relative">
-                      <User className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <Input
-                        type="text"
-                        name="username"
-                        value={formData.username}
-                        onChange={handleInputChange}
-                        placeholder="Choose a username"
-                        className="pl-12 h-12 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 backdrop-blur-sm"
-                        required
-                      />
+                <div className="min-h-[80px]">
+                  {mode === 'register' && (
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-200">
+                        Username
+                      </label>
+                      <div className="relative">
+                        <User className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          type="text"
+                          name="username"
+                          value={formData.username}
+                          onChange={handleInputChange}
+                          placeholder="Choose a username"
+                          className="pl-12 h-12 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 backdrop-blur-sm"
+                          required
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
                 
                 {/* Password Field */}
                 <div className="space-y-2">
@@ -325,44 +328,48 @@ const Index = () => {
                   </div>
                   
                   {/* Password Strength Indicator (Register only) */}
-                  {mode === 'register' && formData.password && (
-                    <div className="space-y-2 p-4 bg-white/5 rounded-lg backdrop-blur-sm border border-white/10">
-                      <PasswordRequirement met={passwordStrength.hasLength} text="At least 8 characters" />
-                      <PasswordRequirement met={passwordStrength.hasUpper} text="One uppercase letter" />
-                      <PasswordRequirement met={passwordStrength.hasLower} text="One lowercase letter" />
-                      <PasswordRequirement met={passwordStrength.hasNumber} text="One number" />
-                      <PasswordRequirement met={passwordStrength.hasSpecial} text="One special character" />
-                    </div>
-                  )}
+                  <div className="min-h-[120px]">
+                    {mode === 'register' && formData.password && (
+                      <div className="space-y-2 p-4 bg-white/5 rounded-lg backdrop-blur-sm border border-white/10">
+                        <PasswordRequirement met={passwordStrength.hasLength} text="At least 8 characters" />
+                        <PasswordRequirement met={passwordStrength.hasUpper} text="One uppercase letter" />
+                        <PasswordRequirement met={passwordStrength.hasLower} text="One lowercase letter" />
+                        <PasswordRequirement met={passwordStrength.hasNumber} text="One number" />
+                        <PasswordRequirement met={passwordStrength.hasSpecial} text="One special character" />
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Confirm Password Field (Register only) */}
-                {mode === 'register' && (
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-200">
-                      Confirm Password
-                    </label>
-                    <div className="relative">
-                      <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <Input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleInputChange}
-                        placeholder="Confirm your password"
-                        className="pl-12 pr-12 h-12 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 backdrop-blur-sm"
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
-                      >
-                        {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                      </button>
+                <div className="min-h-[80px]">
+                  {mode === 'register' && (
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-200">
+                        Confirm Password
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          type={showConfirmPassword ? 'text' : 'password'}
+                          name="confirmPassword"
+                          value={formData.confirmPassword}
+                          onChange={handleInputChange}
+                          placeholder="Confirm your password"
+                          className="pl-12 pr-12 h-12 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 backdrop-blur-sm"
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
+                        >
+                          {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
                 
                 {/* Remember Me / Terms */}
                 <div className="flex items-center justify-between">
@@ -402,7 +409,9 @@ const Index = () => {
                     </button>
                   )}
                 </div>
+                </div>
                 
+                <div className="mt-6">
                 <Button
                   type="submit"
                   disabled={isLoading || (mode === 'register' && !formData.acceptTerms)}
@@ -420,18 +429,10 @@ const Index = () => {
                     </div>
                   )}
                 </Button>
+                </div>
               </form>
             </CardContent>
           </Card>
-
-          {/* Demo Credentials */}
-          <div className="mt-8 p-6 bg-white/5 rounded-xl border border-white/10 backdrop-blur-sm">
-            <h3 className="text-sm font-semibold text-violet-400 mb-3">Demo Credentials</h3>
-            <div className="text-sm text-gray-300 space-y-2">
-              <div><span className="text-gray-400">Email:</span> admin@abyssalsecurity.com</div>
-              <div><span className="text-gray-400">Password:</span> SecureAdmin123!</div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
