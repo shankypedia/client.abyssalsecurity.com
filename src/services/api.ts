@@ -1,10 +1,13 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export interface User {
-  id: number;
+  id: string;
   email: string;
   username: string;
+  firstName?: string;
+  lastName?: string;
   createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface AuthResponse {
@@ -125,6 +128,37 @@ class ApiService {
 
   async getUserProfile(): Promise<{ success: boolean; user?: User; message?: string }> {
     const response = await fetch(`${API_BASE_URL}/user/profile`, {
+      headers: this.getAuthHeaders(),
+      credentials: 'include',
+    });
+    
+    return this.handleResponse(response);
+  }
+
+  async updateUserProfile(firstName: string, lastName: string, username: string): Promise<{ success: boolean; user?: User; message?: string }> {
+    const response = await fetch(`${API_BASE_URL}/user/profile`, {
+      method: 'PUT',
+      headers: this.getAuthHeaders(),
+      credentials: 'include',
+      body: JSON.stringify({ firstName, lastName, username }),
+    });
+    
+    return this.handleResponse(response);
+  }
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; message?: string }> {
+    const response = await fetch(`${API_BASE_URL}/user/password`, {
+      method: 'PUT',
+      headers: this.getAuthHeaders(),
+      credentials: 'include',
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+    
+    return this.handleResponse(response);
+  }
+
+  async getServices(): Promise<{ success: boolean; services?: any[]; message?: string }> {
+    const response = await fetch(`${API_BASE_URL}/services`, {
       headers: this.getAuthHeaders(),
       credentials: 'include',
     });

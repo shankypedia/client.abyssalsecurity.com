@@ -22,6 +22,32 @@ const PORT = process.env.PORT || 3001;
 // In-memory storage for demo (replace with database in production)
 const users = [];
 const sessions = [];
+const services = [
+  {
+    id: 'security-scan',
+    name: 'Security Vulnerability Scanner',
+    description: 'Comprehensive security assessment of your infrastructure',
+    status: 'available',
+    category: 'security',
+    icon: 'shield-check'
+  },
+  {
+    id: 'penetration-test',
+    name: 'Penetration Testing Service',
+    description: 'Advanced penetration testing and vulnerability analysis',
+    status: 'available',
+    category: 'testing',
+    icon: 'bug'
+  },
+  {
+    id: 'compliance-audit',
+    name: 'Compliance Audit',
+    description: 'Ensure your systems meet industry compliance standards',
+    status: 'coming-soon',
+    category: 'compliance',
+    icon: 'clipboard-check'
+  }
+];
 
 // Middleware
 app.use(helmet({ contentSecurityPolicy: false }));
@@ -265,6 +291,111 @@ app.get('/api/user/profile', authenticateToken, (req, res) => {
   res.json({
     success: true,
     data: { user: userResponse }
+  });
+});
+
+// Update user profile
+app.put('/api/user/profile', authenticateToken, async (req, res) => {
+  try {
+    const { firstName, lastName, username } = req.body;
+    const userId = req.user.id;
+
+    // Find user index
+    const userIndex = users.findIndex(u => u.id === userId);
+    if (userIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Check if username is taken by another user
+    if (username && username !== req.user.username) {
+      const existingUser = users.find(u => u.username === username && u.id !== userId);
+      if (existingUser) {
+        return res.status(409).json({
+          success: false,
+          message: 'Username already taken'
+        });
+      }
+    }
+
+    // Update user data
+    if (firstName) users[userIndex].firstName = firstName;
+    if (lastName) users[userIndex].lastName = lastName;
+    if (username) users[userIndex].username = username;
+    users[userIndex].updatedAt = new Date().toISOString();
+
+    const { password: _, ...userResponse } = users[userIndex];
+    
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: { user: userResponse }
+    });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+});
+
+// Change password
+app.put('/api/user/password', authenticateToken, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.id;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Current password and new password are required'
+      });
+    }
+
+    // Find user
+    const userIndex = users.findIndex(u => u.id === userId);
+    if (userIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Verify current password
+    const isValidPassword = await verifyPassword(currentPassword, users[userIndex].password);
+    if (!isValidPassword) {
+      return res.status(401).json({
+        success: false,
+        message: 'Current password is incorrect'
+      });
+    }
+
+    // Hash new password
+    const hashedNewPassword = await hashPassword(newPassword);
+    users[userIndex].password = hashedNewPassword;
+    users[userIndex].updatedAt = new Date().toISOString();
+
+    res.json({
+      success: true,
+      message: 'Password changed successfully'
+    });
+  } catch (error) {
+    console.error('Password change error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+});
+
+// Get available services
+app.get('/api/services', authenticateToken, (req, res) => {
+  res.json({
+    success: true,
+    data: { services }
   });
 });
 

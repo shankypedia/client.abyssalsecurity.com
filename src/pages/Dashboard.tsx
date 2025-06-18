@@ -14,15 +14,19 @@ import {
   TrendingUp,
   CheckCircle,
   BarChart3,
-  Search
+  Search,
+  Layers,
+  ArrowRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { apiService } from '@/services/api';
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [services, setServices] = useState([]);
   const { toast } = useToast();
   const { user, isAuthenticated, logout, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -33,6 +37,24 @@ const Dashboard = () => {
       navigate('/');
     }
   }, [isAuthenticated, isLoading, navigate]);
+
+  // Load services
+  useEffect(() => {
+    const loadServices = async () => {
+      try {
+        const response = await apiService.getServices();
+        if (response.success && response.services) {
+          setServices(response.services.slice(0, 3)); // Show only first 3 on dashboard
+        }
+      } catch (error) {
+        console.error('Failed to load services:', error);
+      }
+    };
+
+    if (isAuthenticated) {
+      loadServices();
+    }
+  }, [isAuthenticated]);
 
   const handleLogout = () => {
     logout();
@@ -61,11 +83,13 @@ const Dashboard = () => {
   }
 
   const menuItems = [
-    { icon: Home, label: 'Dashboard', active: true },
-    { icon: Shield, label: 'Security', active: false },
-    { icon: Activity, label: 'Monitoring', active: false },
-    { icon: BarChart3, label: 'Analytics', active: false },
-    { icon: Settings, label: 'Settings', active: false },
+    { icon: Home, label: 'Dashboard', active: true, path: '/dashboard' },
+    { icon: Shield, label: 'Security', active: false, path: '/security' },
+    { icon: Layers, label: 'Services', active: false, path: '/services' },
+    { icon: Activity, label: 'Monitoring', active: false, path: '/monitoring' },
+    { icon: BarChart3, label: 'Analytics', active: false, path: '/analytics' },
+    { icon: User, label: 'Profile', active: false, path: '/profile' },
+    { icon: Settings, label: 'Settings', active: false, path: '/settings' },
   ];
 
   const Sidebar = () => (
@@ -89,11 +113,14 @@ const Dashboard = () => {
             <li key={item.label}>
               <button
                 onClick={() => {
-                  // For now, just show which item was clicked
-                  toast({
-                    title: "Navigation",
-                    description: `${item.label} clicked - Coming soon!`,
-                  });
+                  if (item.path === '/services' || item.path === '/profile') {
+                    navigate(item.path);
+                  } else {
+                    toast({
+                      title: "Navigation",
+                      description: `${item.label} - Coming soon in Month 3!`,
+                    });
+                  }
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-all duration-200 ${
                   item.active 
@@ -359,6 +386,111 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Available Services Section */}
+            <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white flex items-center space-x-3">
+                    <div className="p-2 bg-violet-500/20 rounded-lg">
+                      <Layers className="h-5 w-5 text-violet-400" />
+                    </div>
+                    <span>Available Services</span>
+                  </CardTitle>
+                  <Button
+                    onClick={() => navigate('/services')}
+                    variant="ghost"
+                    className="text-violet-400 hover:text-violet-300"
+                  >
+                    View All <ArrowRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {services.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {services.map((service: any) => (
+                      <div 
+                        key={service.id}
+                        className="p-4 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors cursor-pointer"
+                        onClick={() => navigate('/services')}
+                      >
+                        <div className="flex items-center space-x-3 mb-2">
+                          <Shield className="h-5 w-5 text-violet-400" />
+                          <h4 className="font-medium text-white text-sm">{service.name}</h4>
+                        </div>
+                        <p className="text-xs text-gray-400 leading-relaxed">{service.description}</p>
+                        <div className="mt-2">
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            service.status === 'available' 
+                              ? 'text-green-400 bg-green-500/20' 
+                              : 'text-yellow-400 bg-yellow-500/20'
+                          }`}>
+                            {service.status === 'available' ? 'Available' : 'Coming Soon'}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Layers className="h-12 w-12 text-gray-500 mx-auto mb-3" />
+                    <p className="text-gray-400">Loading services...</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* User Account Summary */}
+            <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-white flex items-center space-x-3">
+                  <div className="p-2 bg-cyan-500/20 rounded-lg">
+                    <User className="h-5 w-5 text-cyan-400" />
+                  </div>
+                  <span>Account Summary</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-400 mb-2">Account Holder</h3>
+                    <p className="text-white font-medium">{user.firstName} {user.lastName}</p>
+                    <p className="text-gray-400 text-sm">@{user.username}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-400 mb-2">Member Since</h3>
+                    <p className="text-white">
+                      {user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      }) : 'Recent'}
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-400 mb-2">Quick Actions</h3>
+                    <div className="flex space-x-2">
+                      <Button
+                        onClick={() => navigate('/profile')}
+                        size="sm"
+                        variant="outline"
+                        className="border-white/20 text-gray-300 hover:text-white hover:bg-white/10 text-xs"
+                      >
+                        Edit Profile
+                      </Button>
+                      <Button
+                        onClick={() => navigate('/services')}
+                        size="sm"
+                        className="bg-gradient-to-r from-violet-600 to-cyan-600 hover:from-violet-700 hover:to-cyan-700 text-white text-xs"
+                      >
+                        View Services
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </main>
       </div>
