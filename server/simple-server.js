@@ -141,9 +141,11 @@ app.post('/api/auth/register', async (req, res) => {
 
 app.post('/api/auth/login', async (req, res) => {
   try {
+    console.log('Login request received:', { login: req.body.login, passwordLength: req.body.password?.length });
     const { login, password } = req.body;
 
     if (!login || !password) {
+      console.log('Missing login fields:', { login: !!login, password: !!password });
       return res.status(400).json({
         success: false,
         message: 'Email/username and password are required'
@@ -151,16 +153,22 @@ app.post('/api/auth/login', async (req, res) => {
     }
 
     // Find user
+    console.log('Looking for user with login:', login);
+    console.log('Current users:', users.map(u => ({ id: u.id, email: u.email, username: u.username })));
     const user = users.find(u => u.email === login || u.username === login);
     if (!user) {
+      console.log('User not found for login:', login);
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
       });
     }
 
+    console.log('User found:', { id: user.id, email: user.email, username: user.username });
+
     // Verify password
     const isValidPassword = await verifyPassword(password, user.password);
+    console.log('Password verification result:', isValidPassword);
     if (!isValidPassword) {
       return res.status(401).json({
         success: false,
@@ -169,6 +177,7 @@ app.post('/api/auth/login', async (req, res) => {
     }
 
     // Generate tokens
+    console.log('Generating tokens for user:', user.id);
     const accessToken = generateToken(user);
     const refreshToken = jwt.sign(
       { userId: user.id, type: 'refresh' },
@@ -188,6 +197,7 @@ app.post('/api/auth/login', async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({
       success: false,
       message: 'Internal server error'
