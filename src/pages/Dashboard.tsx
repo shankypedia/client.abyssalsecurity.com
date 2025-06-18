@@ -69,7 +69,7 @@ const Dashboard = () => {
   ];
 
   const Sidebar = () => (
-    <aside className={`fixed inset-y-0 left-0 z-50 w-60 bg-gray-950/95 backdrop-blur-xl border-r border-white/10 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
+    <aside className={`fixed inset-y-0 left-0 z-50 w-60 bg-gray-950/95 backdrop-blur-xl border-r border-white/10 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0`}>
       <div className="h-16 flex items-center px-6 border-b border-white/10">
         <div className="flex items-center space-x-2">
           <Shield className="h-6 w-6 text-violet-400" />
@@ -139,7 +139,7 @@ const Dashboard = () => {
         />
       )}
       
-      <div className="lg:ml-60 relative z-10">
+      <div className="lg:ml-60 relative z-10 min-h-screen flex flex-col">
         {/* Header */}
         <header className="bg-white/5 backdrop-blur-xl border-b border-white/10 sticky top-0 z-30">
           <div className="flex items-center justify-between h-16 px-6">
@@ -174,7 +174,7 @@ const Dashboard = () => {
         </header>
         
         {/* Main Content */}
-        <main className="p-6">
+        <main className="flex-1 p-6">
           <div className="max-w-7xl mx-auto space-y-6">
             
             {/* Welcome Section */}
