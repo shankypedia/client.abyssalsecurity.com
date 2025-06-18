@@ -1,0 +1,126 @@
+// AbyssalSecurity Client Portal Prisma Schema
+// Comprehensive database schema with security, relationships and indexes
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                     Int       @id @default(autoincrement())
+  email                  String    @unique
+  username               String    @unique
+  password               String
+  
+  // Security fields
+  failedLoginAttempts    Int       @default(0) @map("failed_login_attempts")
+  lockedUntil           DateTime? @map("locked_until")
+  lastLogin             DateTime? @map("last_login")
+  lastLoginIp           String?   @map("last_login_ip")
+  
+  // Profile fields
+  firstName             String?   @map("first_name")
+  lastName              String?   @map("last_name")
+  phoneNumber           String?   @map("phone_number")
+  
+  // Account status
+  isActive              Boolean   @default(true) @map("is_active")
+  isVerified            Boolean   @default(false) @map("is_verified")
+  emailVerifiedAt       DateTime? @map("email_verified_at")
+  
+  // Two-factor authentication
+  twoFactorEnabled      Boolean   @default(false) @map("two_factor_enabled")
+  twoFactorSecret       String?   @map("two_factor_secret")
+  backupCodes           String?   @map("backup_codes") // JSON array of backup codes
+  
+  // Timestamps
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  securityLogs          SecurityLog[]
+  sessions              Session[]
+  
+  @@index([email])
+  @@index([username])
+  @@index([lastLogin])
+  @@index([lockedUntil])
+  @@map("users")
+}
+
+model SecurityLog {
+  id                    Int       @id @default(autoincrement())
+  userId                Int?      @map("user_id")
+  eventType             String    @map("event_type")
+  ipAddress             String    @map("ip_address")
+  userAgent             String?   @map("user_agent")
+  details               String?   // JSON string with additional details
+  severity              String    @default("INFO") // INFO, WARN, ERROR, CRITICAL
+  
+  // Geolocation data (optional)
+  country               String?
+  region                String?
+  city                  String?
+  
+  // Timestamps
+  createdAt             DateTime  @default(now()) @map("created_at")
+  
+  // Relations
+  user                  User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  @@index([userId])
+  @@index([eventType])
+  @@index([ipAddress])
+  @@index([createdAt])
+  @@index([severity])
+  @@map("security_logs")
+}
+
+model Session {
+  id                    String    @id
+  userId                Int       @map("user_id")
+  ipAddress             String    @map("ip_address")
+  userAgent             String?   @map("user_agent")
+  
+  // Session data
+  isActive              Boolean   @default(true) @map("is_active")
+  lastActivity          DateTime  @default(now()) @map("last_activity")
+  
+  // Device information
+  deviceInfo            String?   @map("device_info") // JSON string with device details
+  
+  // Timestamps
+  createdAt             DateTime  @default(now()) @map("created_at")
+  expiresAt             DateTime  @map("expires_at")
+  
+  // Relations
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([lastActivity])
+  @@index([isActive])
+  @@map("sessions")
+}
+
+model SystemConfig {
+  id                    Int       @id @default(autoincrement())
+  key                   String    @unique
+  value                 String
+  description           String?
+  category              String    @default("general")
+  
+  // Timestamps
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+  
+  @@index([key])
+  @@index([category])
+  @@map("system_config")
+}
+
