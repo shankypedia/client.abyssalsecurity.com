@@ -83,29 +83,36 @@ const Dashboard = () => {
         </button>
       </div>
       
-      <nav className="mt-6 px-3">
-        <ul className="space-y-1">
+      <nav className="mt-8 px-4">
+        <ul className="space-y-2">
           {menuItems.map((item) => (
             <li key={item.label}>
               <button
-                className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200 ${
+                onClick={() => {
+                  // For now, just show which item was clicked
+                  toast({
+                    title: "Navigation",
+                    description: `${item.label} clicked - Coming soon!`,
+                  });
+                }}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-all duration-200 ${
                   item.active 
                     ? 'bg-gradient-to-r from-violet-500/20 to-cyan-500/20 text-white border border-violet-500/30' 
                     : 'text-gray-300 hover:bg-white/5 hover:text-white'
                 }`}
               >
                 <item.icon className="h-5 w-5" />
-                <span>{item.label}</span>
+                <span className="font-medium">{item.label}</span>
               </button>
             </li>
           ))}
         </ul>
       </nav>
       
-      <div className="absolute bottom-6 left-3 right-3">
-        <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg border border-white/10">
-          <div className="h-8 w-8 bg-gradient-to-r from-violet-500 to-cyan-500 rounded-full flex items-center justify-center">
-            <User className="h-4 w-4 text-white" />
+      <div className="absolute bottom-6 left-4 right-4">
+        <div className="flex items-center space-x-3 p-4 bg-white/5 rounded-xl border border-white/10">
+          <div className="h-10 w-10 bg-gradient-to-r from-violet-500 to-cyan-500 rounded-full flex items-center justify-center">
+            <User className="h-5 w-5 text-white" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium text-white truncate">{user.username}</p>
@@ -115,7 +122,7 @@ const Dashboard = () => {
             onClick={handleLogout}
             variant="ghost"
             size="sm"
-            className="text-gray-400 hover:text-white p-1"
+            className="text-gray-400 hover:text-white p-2 hover:bg-white/10 rounded-lg transition-colors"
           >
             <LogOut className="h-4 w-4" />
           </Button>
@@ -162,10 +169,26 @@ const Dashboard = () => {
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-violet-500 focus:border-transparent backdrop-blur-sm"
+                  className="w-80 pl-10 pr-4 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-violet-500 focus:border-transparent backdrop-blur-sm transition-all"
+                  onFocus={(e) => {
+                    toast({
+                      title: "Search",
+                      description: "Search functionality coming soon!",
+                    });
+                  }}
                 />
               </div>
-              <Button variant="ghost" size="sm" className="relative text-gray-400 hover:text-white">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="relative text-gray-400 hover:text-white p-2"
+                onClick={() => {
+                  toast({
+                    title: "Notifications",
+                    description: "You have no new notifications.",
+                  });
+                }}
+              >
                 <Bell className="h-5 w-5" />
                 <span className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full"></span>
               </Button>
@@ -174,26 +197,26 @@ const Dashboard = () => {
         </header>
         
         {/* Main Content */}
-        <main className="flex-1 p-6">
-          <div className="max-w-7xl mx-auto space-y-6">
+        <main className="flex-1 p-8">
+          <div className="max-w-7xl mx-auto space-y-8">
             
             {/* Welcome Section */}
-            <div className="bg-gradient-to-r from-violet-500/10 via-cyan-500/10 to-violet-500/10 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
+            <div className="bg-gradient-to-r from-violet-500/10 via-cyan-500/10 to-violet-500/10 rounded-2xl p-8 border border-white/10 backdrop-blur-sm">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-white mb-2">Welcome back, {user.username}!</h2>
-                  <p className="text-gray-300">Your security infrastructure is operating at peak performance.</p>
+                  <h2 className="text-3xl font-bold text-white mb-3">Welcome back, {user.username}!</h2>
+                  <p className="text-gray-300 text-lg">Your security infrastructure is operating at peak performance.</p>
                 </div>
                 <div className="hidden md:block">
-                  <div className="p-4 bg-white/10 rounded-2xl">
-                    <Shield className="h-12 w-12 text-violet-400" />
+                  <div className="p-6 bg-white/10 rounded-2xl">
+                    <Shield className="h-16 w-16 text-violet-400" />
                   </div>
                 </div>
               </div>
             </div>
             
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
@@ -258,7 +281,7 @@ const Dashboard = () => {
             </div>
             
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Security Overview */}
               <Card className="lg:col-span-2 bg-white/5 border-white/10 backdrop-blur-sm">
                 <CardHeader className="pb-4">
