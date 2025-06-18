@@ -145,19 +145,25 @@ const Index = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-violet-950 to-gray-900 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDEwIDAgTCA1MCA0MCBNIDAgMTAgTCA0MCA1MCBNIDY2IDEwIEwgNDUgMzAiIHN0cm9rZT0iIzMxMzE0MSIgc3Ryb2tlLXdpZHRoPSIwLjUiIGZpbGw9Im5vbmUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20"></div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-violet-950 to-gray-900 flex items-center justify-center p-4 relative overflow-hidden scroll-smooth">
+      {/* Enhanced Background Pattern */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDEwIDAgTCA1MCA0MCBNIDAgMTAgTCA0MCA1MEBNIDY2IDEwIEwgNDUgMzAiIHN0cm9rZT0iIzMxMzE0MSIgc3Ryb2tlLXdpZHRoPSIwLjUiIGZpbGw9Im5vbmUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20 animate-pulse"></div>
       
-      {/* Floating Elements */}
-      <div className="absolute top-20 left-10 opacity-10 animate-pulse">
+      {/* Enhanced Floating Elements */}
+      <div className="absolute top-20 left-10 opacity-15 animate-float-1">
         <Shield className="h-20 w-20 text-violet-400" />
       </div>
-      <div className="absolute bottom-20 right-10 opacity-10 animate-pulse delay-1000">
+      <div className="absolute bottom-20 right-10 opacity-15 animate-float-2">
         <Lock className="h-16 w-16 text-violet-400" />
       </div>
-      <div className="absolute top-1/3 right-1/3 opacity-5 animate-pulse delay-500">
+      <div className="absolute top-1/3 right-1/3 opacity-10 animate-float-3">
         <Zap className="h-12 w-12 text-violet-400" />
+      </div>
+      <div className="absolute bottom-1/4 left-1/4 opacity-8 animate-float-1" style={{ animationDelay: '2s' }}>
+        <Globe className="h-14 w-14 text-cyan-400" />
+      </div>
+      <div className="absolute top-1/4 left-1/2 opacity-12 animate-float-2" style={{ animationDelay: '1s' }}>
+        <Users className="h-10 w-10 text-violet-400" />
       </div>
       
       <div className="flex flex-col lg:flex-row items-center justify-center max-w-7xl mx-auto gap-16 z-10">
