@@ -5,7 +5,8 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
-import userRoutes from './routes/user.js';
+import userRoutes from './routes/user-v2.js';
+import servicesRoutes from './routes/services.js';
 import logger, { securityLogger } from './utils/logger.js';
 import { 
   csrfProtection, 
@@ -110,6 +111,7 @@ app.get('/health', (req, res) => {
 // Routes with CSRF protection
 app.use('/api/auth', authLimiter, csrfProtection(), authRoutes);
 app.use('/api/user', csrfProtection(), userRoutes);
+app.use('/api/services', csrfProtection(), servicesRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

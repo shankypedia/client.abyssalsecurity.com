@@ -166,6 +166,15 @@ class ApiService {
     return this.handleResponse(response);
   }
 
+  async getDashboardStats(): Promise<{ success: boolean; stats?: any; message?: string }> {
+    const response = await fetch(`${API_BASE_URL}/services/stats/dashboard`, {
+      headers: this.getAuthHeaders(),
+      credentials: 'include',
+    });
+    
+    return this.handleResponse(response);
+  }
+
   async verifyToken(): Promise<{ success: boolean; user?: User; message?: string }> {
     const response = await fetch(`${API_BASE_URL}/user/verify`, {
       headers: this.getAuthHeaders(),

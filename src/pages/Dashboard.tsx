@@ -27,6 +27,7 @@ import { apiService } from '@/services/api';
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [services, setServices] = useState([]);
+  const [dashboardStats, setDashboardStats] = useState(null);
   const { toast } = useToast();
   const { user, isAuthenticated, logout, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -38,21 +39,43 @@ const Dashboard = () => {
     }
   }, [isAuthenticated, isLoading, navigate]);
 
-  // Load services
+  // Load services and dashboard stats
   useEffect(() => {
-    const loadServices = async () => {
+    const loadDashboardData = async () => {
       try {
-        const response = await apiService.getServices();
-        if (response.success && response.services) {
-          setServices(response.services.slice(0, 3)); // Show only first 3 on dashboard
+        const [servicesResponse, statsResponse] = await Promise.all([
+          apiService.getServices(),
+          apiService.getDashboardStats()
+        ]);
+        
+        if (servicesResponse.success && servicesResponse.services) {
+          setServices(servicesResponse.services.slice(0, 3)); // Show only first 3 on dashboard
+        }
+        
+        if (statsResponse.success && statsResponse.stats) {
+          setDashboardStats(statsResponse.stats);
         }
       } catch (error) {
-        console.error('Failed to load services:', error);
+        console.error('Failed to load dashboard data:', error);
       }
     };
 
     if (isAuthenticated) {
-      loadServices();
+      loadDashboardData();
+      
+      // Refresh stats every 30 seconds for dynamic feel
+      const interval = setInterval(async () => {
+        try {
+          const statsResponse = await apiService.getDashboardStats();
+          if (statsResponse.success && statsResponse.stats) {
+            setDashboardStats(statsResponse.stats);
+          }
+        } catch (error) {
+          console.error('Failed to refresh stats:', error);
+        }
+      }, 30000);
+      
+      return () => clearInterval(interval);
     }
   }, [isAuthenticated]);
 
@@ -249,7 +272,9 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-300">Security Status</p>
-                      <p className="text-2xl font-bold text-green-400 mt-1">Secure</p>
+                      <p className="text-2xl font-bold text-green-400 mt-1 capitalize">
+                        {dashboardStats?.securityStatus || 'Secure'}
+                      </p>
                     </div>
                     <div className="p-3 bg-green-500/20 rounded-full">
                       <CheckCircle className="h-6 w-6 text-green-400" />
@@ -263,7 +288,9 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-300">Active Monitors</p>
-                      <p className="text-2xl font-bold text-white mt-1">247</p>
+                      <p className="text-2xl font-bold text-white mt-1">
+                        {dashboardStats?.activeMonitors || '247'}
+                      </p>
                     </div>
                     <div className="p-3 bg-violet-500/20 rounded-full">
                       <Activity className="h-6 w-6 text-violet-400" />
@@ -281,7 +308,9 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-300">Response Time</p>
-                      <p className="text-2xl font-bold text-white mt-1">0.3s</p>
+                      <p className="text-2xl font-bold text-white mt-1">
+                        {dashboardStats?.responseTime || '0.3s'}
+                      </p>
                     </div>
                     <div className="p-3 bg-cyan-500/20 rounded-full">
                       <BarChart3 className="h-6 w-6 text-cyan-400" />
@@ -296,7 +325,9 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-300">Uptime</p>
-                      <p className="text-2xl font-bold text-white mt-1">99.98%</p>
+                      <p className="text-2xl font-bold text-white mt-1">
+                        {dashboardStats?.uptime || '99.98%'}
+                      </p>
                     </div>
                     <div className="p-3 bg-green-500/20 rounded-full">
                       <Shield className="h-6 w-6 text-green-400" />
