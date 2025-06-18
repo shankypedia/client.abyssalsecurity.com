@@ -40,6 +40,9 @@ const verifyPassword = async (password, hash) => {
 };
 
 const generateToken = (user) => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is not set');
+  }
   return jwt.sign(
     { userId: user.id, email: user.email, username: user.username },
     process.env.JWT_SECRET,
@@ -71,10 +74,12 @@ app.get('/api/csrf-token', (req, res) => {
 // Auth endpoints
 app.post('/api/auth/register', async (req, res) => {
   try {
+    console.log('Registration request received:', req.body);
     const { email, username, password, firstName, lastName } = req.body;
 
     // Basic validation
     if (!email || !username || !password || !firstName || !lastName) {
+      console.log('Missing fields:', { email: !!email, username: !!username, password: !!password, firstName: !!firstName, lastName: !!lastName });
       return res.status(400).json({
         success: false,
         message: 'All fields are required'
@@ -126,6 +131,7 @@ app.post('/api/auth/register', async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Registration error:', error);
     res.status(500).json({
       success: false,
       message: 'Internal server error'
@@ -264,10 +270,11 @@ app.use((error, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
   console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔑 JWT Secret configured: ${!!process.env.JWT_SECRET}`);
 });
 
 export default app;

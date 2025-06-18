@@ -77,6 +77,8 @@ class ApiService {
       await this.initializeCSRF();
     }
 
+    console.log('Sending registration request:', { email, username, firstName, lastName, passwordLength: password.length });
+
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: 'POST',
       headers: this.getAuthHeaders(),
@@ -84,7 +86,11 @@ class ApiService {
       body: JSON.stringify({ email, username, password, firstName, lastName }),
     });
     
+    console.log('Registration response status:', response.status);
+    
     const data = await this.handleResponse(response);
+    
+    console.log('Registration response data:', data);
     
     if (data.success && data.data?.tokens?.accessToken) {
       this.setToken(data.data.tokens.accessToken, remember);
