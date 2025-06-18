@@ -233,7 +233,7 @@ const Index = () => {
         
         {/* Authentication Card */}
         <div className="w-full max-w-md">
-          <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
+          <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl min-h-[600px] flex flex-col">
             <CardHeader className="text-center pb-8">
               <div className="flex justify-center mb-6">
                 <div className="p-4 bg-violet-500/20 rounded-2xl backdrop-blur-sm border border-violet-500/30">
@@ -255,7 +255,7 @@ const Index = () => {
               </p>
             </CardHeader>
             
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 flex-1 flex flex-col">
               {/* Mode Toggle */}
               <div className="flex bg-white/10 rounded-xl p-1.5 backdrop-blur-sm border border-white/20">
                 <button
@@ -282,7 +282,7 @@ const Index = () => {
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-5 flex-1 flex flex-col">
                 {/* Email Field */}
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-200">
@@ -495,6 +495,8 @@ const Index = () => {
                     </button>
                   )}
                 </div>
+                
+                <div className="flex-1"></div>
                 
                 <Button
                   type="submit"
