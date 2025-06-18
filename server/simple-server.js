@@ -10,6 +10,12 @@ import jwt from 'jsonwebtoken';
 // Load environment variables
 dotenv.config();
 
+// Set JWT_SECRET if not provided
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = 'abyssal_security_jwt_secret_key_for_development_only';
+  console.log('🔑 Using default JWT_SECRET for development');
+}
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
