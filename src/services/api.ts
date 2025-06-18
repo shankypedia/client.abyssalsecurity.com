@@ -16,11 +16,28 @@ export interface AuthResponse {
 }
 
 class ApiService {
+  private csrfToken: string | null = null;
+
+  async initializeCSRF(): Promise<void> {
+    try {
+      const response = await fetch(`${API_BASE_URL.replace('/api', '')}/api/csrf-token`, {
+        credentials: 'include'
+      });
+      const data = await response.json();
+      if (data.success) {
+        this.csrfToken = data.csrfToken;
+      }
+    } catch (error) {
+      console.error('Failed to initialize CSRF token:', error);
+    }
+  }
+
   private getAuthHeaders(): HeadersInit {
     const token = this.getToken();
     return {
       'Content-Type': 'application/json',
       ...(token && { Authorization: `Bearer ${token}` }),
+      ...(this.csrfToken && { 'X-CSRF-Token': this.csrfToken }),
     };
   }
 
@@ -55,9 +72,15 @@ class ApiService {
   }
 
   async register(email: string, username: string, password: string, remember: boolean = true): Promise<AuthResponse> {
+    // Ensure CSRF token is available
+    if (!this.csrfToken) {
+      await this.initializeCSRF();
+    }
+
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: 'POST',
       headers: this.getAuthHeaders(),
+      credentials: 'include',
       body: JSON.stringify({ email, username, password }),
     });
     
@@ -72,9 +95,15 @@ class ApiService {
   }
 
   async login(email: string, password: string, remember: boolean = true): Promise<AuthResponse> {
+    // Ensure CSRF token is available
+    if (!this.csrfToken) {
+      await this.initializeCSRF();
+    }
+
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: this.getAuthHeaders(),
+      credentials: 'include',
       body: JSON.stringify({ email, password }),
     });
     
@@ -91,6 +120,7 @@ class ApiService {
   async getUserProfile(): Promise<{ success: boolean; user?: User; message?: string }> {
     const response = await fetch(`${API_BASE_URL}/user/profile`, {
       headers: this.getAuthHeaders(),
+      credentials: 'include',
     });
     
     return this.handleResponse(response);
@@ -99,6 +129,7 @@ class ApiService {
   async verifyToken(): Promise<{ success: boolean; user?: User; message?: string }> {
     const response = await fetch(`${API_BASE_URL}/user/verify`, {
       headers: this.getAuthHeaders(),
+      credentials: 'include',
     });
     
     return this.handleResponse(response);

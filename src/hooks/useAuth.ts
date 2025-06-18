@@ -8,15 +8,19 @@ export const useAuth = () => {
 
   useEffect(() => {
     const initAuth = async () => {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+      const storedUser = localStorage.getItem('user') || sessionStorage.getItem('user');
       
-      if (token) {
+      if (token && storedUser) {
         try {
+          // Set user immediately from storage to avoid redirect
+          const userData = JSON.parse(storedUser);
+          setUser(userData);
+          setIsAuthenticated(true);
+          
+          // Then verify token in background
           const response = await apiService.verifyToken();
-          if (response.success && response.user) {
-            setUser(response.user);
-            setIsAuthenticated(true);
-          } else {
+          if (!response.success) {
             // Token is invalid, clear storage
             apiService.logout();
             setUser(null);

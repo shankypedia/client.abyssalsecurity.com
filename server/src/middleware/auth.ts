@@ -1,3 +1,22 @@
+/**
+ * Authentication Middleware Module
+ * 
+ * This module provides comprehensive authentication and authorization middleware
+ * for the AbyssalSecurity Client Portal API. It includes JWT token verification,
+ * user session validation, role-based access control, and security logging.
+ * 
+ * Features:
+ * - JWT token generation and verification with enhanced security
+ * - User account status validation (active, locked, verified)
+ * - Role-based access control (admin, user)
+ * - Comprehensive security event logging
+ * - Optional authentication for public endpoints
+ * - Account lockout protection
+ * 
+ * @author AbyssalSecurity Team
+ * @version 2.0.0
+ */
+
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { db } from '../lib/db.js';
@@ -10,16 +29,39 @@ import {
 } from '../types/index.js';
 import { logger, securityLogger } from '../utils/logger.js';
 
-// JWT configuration
+// JWT configuration constants
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_ISSUER = 'abyssal-security-api';
 const JWT_AUDIENCE = 'abyssal-security-client';
 
+// Validate JWT secret is configured
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET environment variable is required');
 }
 
-// Generate JWT token with enhanced payload
+/**
+ * Generate JWT access token with enhanced security payload
+ * 
+ * Creates a signed JWT token containing user information and security metadata.
+ * The token includes issuer/audience validation for additional security.
+ * 
+ * @param user - User object containing authentication details
+ * @param user.id - Unique user identifier
+ * @param user.email - User's email address
+ * @param user.username - User's username
+ * @param user.isActive - Whether the user account is active
+ * @returns Signed JWT token string
+ * 
+ * @example
+ * ```typescript
+ * const token = generateAccessToken({
+ *   id: 'user123',
+ *   email: 'user@example.com',
+ *   username: 'testuser',
+ *   isActive: true
+ * });
+ * ```
+ */
 export function generateAccessToken(user: {
   id: string;
   email: string;
@@ -42,7 +84,28 @@ export function generateAccessToken(user: {
   });
 }
 
-// Verify JWT token
+/**
+ * Verify and decode JWT token with comprehensive error handling
+ * 
+ * Validates the JWT token signature, expiration, issuer, and audience.
+ * Provides detailed error information for different failure scenarios.
+ * 
+ * @param token - JWT token string to verify
+ * @returns Decoded JWT payload if valid
+ * @throws {AuthenticationError} When token verification fails
+ * 
+ * @example
+ * ```typescript
+ * try {
+ *   const payload = verifyToken(token);
+ *   console.log('User ID:', payload.userId);
+ * } catch (error) {
+ *   if (error instanceof AuthenticationError) {
+ *     console.log('Auth failed:', error.code);
+ *   }
+ * }
+ * ```
+ */
 function verifyToken(token: string): JWTPayload {
   try {
     return jwt.verify(token, JWT_SECRET, {
@@ -62,8 +125,27 @@ function verifyToken(token: string): JWTPayload {
   }
 }
 
-// Custom authentication error class
+/**
+ * Custom authentication error class for structured error handling
+ * 
+ * Extends the standard Error class to provide additional context
+ * for authentication failures including error codes and HTTP status codes.
+ * 
+ * @example
+ * ```typescript
+ * throw new AuthenticationError(
+ *   'Token has expired',
+ *   'TOKEN_EXPIRED',
+ *   401
+ * );
+ * ```
+ */
 export class AuthenticationError extends Error {
+  /**
+   * @param message - Human-readable error message
+   * @param code - Unique error code for programmatic handling
+   * @param statusCode - HTTP status code (defaults to 401)
+   */
   constructor(
     message: string,
     public code: string,
@@ -74,7 +156,33 @@ export class AuthenticationError extends Error {
   }
 }
 
-// Enhanced authentication middleware
+/**
+ * Enhanced authentication middleware for protected routes
+ * 
+ * Comprehensive middleware that validates JWT tokens, checks user account status,
+ * and enforces security policies. Includes detailed security logging and
+ * protection against common authentication attacks.
+ * 
+ * Security Features:
+ * - JWT token validation with issuer/audience verification
+ * - User account status validation (active, locked, verified)
+ * - Account lockout enforcement
+ * - Comprehensive security event logging
+ * - IP address and user agent tracking
+ * - Request correlation for audit trails
+ * 
+ * @param req - Express request object
+ * @param res - Express response object  
+ * @param next - Express next function
+ * 
+ * @example
+ * ```typescript
+ * // Protect a route
+ * router.get('/protected', authenticateToken, (req: AuthenticatedRequest, res) => {
+ *   res.json({ user: req.user });
+ * });
+ * ```
+ */
 export async function authenticateToken(
   req: Request,
   res: Response,

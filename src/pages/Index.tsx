@@ -421,13 +421,23 @@ const Index = () => {
                       />
                       <span className="leading-relaxed">
                         I agree to the{' '}
-                        <Link to="/terms" className="text-violet-400 hover:text-violet-300 underline">
+                        <a 
+                          href="https://abyssalsecurity.com/terms" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-violet-400 hover:text-violet-300 underline"
+                        >
                           Terms of Service
-                        </Link>
+                        </a>
                         {' '}and{' '}
-                        <Link to="/privacy" className="text-violet-400 hover:text-violet-300 underline">
+                        <a 
+                          href="https://abyssalsecurity.com/privacy" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-violet-400 hover:text-violet-300 underline"
+                        >
                           Privacy Policy
-                        </Link>
+                        </a>
                       </span>
                     </label>
                   )}
