@@ -69,7 +69,7 @@ const Dashboard = () => {
   ];
 
   const Sidebar = () => (
-    <aside className={`fixed inset-y-0 left-0 z-50 w-60 bg-gray-950/95 backdrop-blur-xl border-r border-white/10 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0`}>
+    <aside className={`fixed inset-y-0 left-0 z-50 w-60 xl:w-72 bg-gray-950/95 backdrop-blur-xl border-r border-white/10 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0`}>
       <div className="h-16 flex items-center px-6 border-b border-white/10">
         <div className="flex items-center space-x-2">
           <Shield className="h-6 w-6 text-violet-400" />
@@ -146,7 +146,7 @@ const Dashboard = () => {
         />
       )}
       
-      <div className="lg:ml-60 relative z-10 min-h-screen flex flex-col">
+      <div className="lg:ml-60 xl:ml-72 relative z-10 min-h-screen flex flex-col">
         {/* Header */}
         <header className="bg-white/5 backdrop-blur-xl border-b border-white/10 sticky top-0 z-30">
           <div className="flex items-center justify-between h-16 px-6">
@@ -164,12 +164,12 @@ const Dashboard = () => {
             </div>
             
             <div className="flex items-center space-x-4">
-              <div className="relative hidden sm:block">
+              <div className="relative flex-1 max-w-md">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="w-48 lg:w-80 pl-10 pr-4 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-violet-500 focus:border-transparent backdrop-blur-sm transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-violet-500 focus:border-transparent backdrop-blur-sm transition-all"
                   onFocus={(e) => {
                     toast({
                       title: "Search",
@@ -197,26 +197,26 @@ const Dashboard = () => {
         </header>
         
         {/* Main Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">
-          <div className="max-w-7xl mx-auto space-y-6 lg:space-y-8">
+        <main className="flex-1 p-4 sm:p-6 xl:p-8">
+          <div className="w-full space-y-4 sm:space-y-6">
             
             {/* Welcome Section */}
-            <div className="bg-gradient-to-r from-violet-500/10 via-cyan-500/10 to-violet-500/10 rounded-2xl p-4 sm:p-6 lg:p-8 border border-white/10 backdrop-blur-sm">
+            <div className="bg-gradient-to-r from-violet-500/10 via-cyan-500/10 to-violet-500/10 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2 lg:mb-3">Welcome back, {user.username}!</h2>
-                  <p className="text-gray-300 text-sm sm:text-base lg:text-lg">Your security infrastructure is operating at peak performance.</p>
+                  <h2 className="text-2xl xl:text-3xl font-bold text-white mb-3">Welcome back, {user.username}!</h2>
+                  <p className="text-gray-300 text-base xl:text-lg">Your security infrastructure is operating at peak performance.</p>
                 </div>
                 <div className="hidden md:block">
-                  <div className="p-4 lg:p-6 bg-white/10 rounded-2xl">
-                    <Shield className="h-12 lg:h-16 w-12 lg:w-16 text-violet-400" />
+                  <div className="p-6 bg-white/10 rounded-2xl">
+                    <Shield className="h-16 w-16 text-violet-400" />
                   </div>
                 </div>
               </div>
             </div>
             
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
@@ -281,7 +281,7 @@ const Dashboard = () => {
             </div>
             
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Security Overview */}
               <Card className="lg:col-span-2 bg-white/5 border-white/10 backdrop-blur-sm">
                 <CardHeader className="pb-4">
