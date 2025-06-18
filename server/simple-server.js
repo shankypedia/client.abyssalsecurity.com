@@ -268,6 +268,14 @@ app.get('/api/user/profile', authenticateToken, (req, res) => {
   });
 });
 
+app.get('/api/user/verify', authenticateToken, (req, res) => {
+  const { password: _, ...userResponse } = req.user;
+  res.json({
+    success: true,
+    data: { user: userResponse }
+  });
+});
+
 // 404 handler
 app.use('*', (req, res) => {
   res.status(404).json({
