@@ -57,9 +57,9 @@ export const useAuth = () => {
     }
   };
 
-  const register = async (email: string, username: string, password: string, remember: boolean = true) => {
+  const register = async (email: string, username: string, password: string, firstName: string, lastName: string, remember: boolean = true) => {
     try {
-      const response = await apiService.register(email, username, password, remember);
+      const response = await apiService.register(email, username, password, firstName, lastName, remember);
       if (response.success && response.user) {
         setUser(response.user);
         setIsAuthenticated(true);

@@ -21,6 +21,8 @@ const Index = () => {
     username: '',
     password: '',
     confirmPassword: '',
+    firstName: '',
+    lastName: '',
     rememberMe: false,
     acceptTerms: false
   });
@@ -86,6 +88,8 @@ const Index = () => {
         const registerData: RegisterForm = {
           email: formData.email,
           username: formData.username,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           password: formData.password,
           confirmPassword: formData.confirmPassword,
           acceptTerms: formData.acceptTerms
@@ -102,7 +106,7 @@ const Index = () => {
           return;
         }
 
-        await register(formData.email, formData.username, formData.password, formData.acceptTerms);
+        await register(formData.email, formData.username, formData.password, formData.firstName, formData.lastName, formData.acceptTerms);
         toast({
           title: "Account Created Successfully",
           description: "Welcome to AbyssalSecurity.",
@@ -315,6 +319,46 @@ const Index = () => {
                         className="pl-12 h-12 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 backdrop-blur-sm"
                         required
                       />
+                    </div>
+                  </div>
+                )}
+
+                {/* Name Fields (Register only) */}
+                {mode === 'register' && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-200">
+                        First Name
+                      </label>
+                      <div className="relative">
+                        <User className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          type="text"
+                          name="firstName"
+                          value={formData.firstName}
+                          onChange={handleInputChange}
+                          placeholder="First name"
+                          className="pl-12 h-12 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 backdrop-blur-sm"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-200">
+                        Last Name
+                      </label>
+                      <div className="relative">
+                        <User className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          type="text"
+                          name="lastName"
+                          value={formData.lastName}
+                          onChange={handleInputChange}
+                          placeholder="Last name"
+                          className="pl-12 h-12 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 backdrop-blur-sm"
+                          required
+                        />
+                      </div>
                     </div>
                   </div>
                 )}

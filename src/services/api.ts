@@ -71,7 +71,7 @@ class ApiService {
     return data;
   }
 
-  async register(email: string, username: string, password: string, remember: boolean = true): Promise<AuthResponse> {
+  async register(email: string, username: string, password: string, firstName: string, lastName: string, remember: boolean = true): Promise<AuthResponse> {
     // Ensure CSRF token is available
     if (!this.csrfToken) {
       await this.initializeCSRF();
@@ -81,14 +81,14 @@ class ApiService {
       method: 'POST',
       headers: this.getAuthHeaders(),
       credentials: 'include',
-      body: JSON.stringify({ email, username, password }),
+      body: JSON.stringify({ email, username, password, firstName, lastName }),
     });
     
     const data = await this.handleResponse(response);
     
-    if (data.success && data.token) {
-      this.setToken(data.token, remember);
-      this.setUser(data.user, remember);
+    if (data.success && data.data?.tokens?.accessToken) {
+      this.setToken(data.data.tokens.accessToken, remember);
+      this.setUser(data.data.user, remember);
     }
     
     return data;
@@ -104,14 +104,14 @@ class ApiService {
       method: 'POST',
       headers: this.getAuthHeaders(),
       credentials: 'include',
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ login: email, password }),
     });
     
     const data = await this.handleResponse(response);
     
-    if (data.success && data.token) {
-      this.setToken(data.token, remember);
-      this.setUser(data.user, remember);
+    if (data.success && data.data?.tokens?.accessToken) {
+      this.setToken(data.data.tokens.accessToken, remember);
+      this.setUser(data.data.user, remember);
     }
     
     return data;
