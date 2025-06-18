@@ -80,14 +80,14 @@ const Dashboard = () => {
   ];
 
   const Sidebar = () => (
-    <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-gray-950/95 backdrop-blur-xl border-r border-white/10 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
+    <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-950/95 backdrop-blur-xl border-r border-white/10 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
       <div className="flex items-center justify-between h-20 px-6 border-b border-white/10">
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2">
           <div className="p-2 bg-violet-500/20 rounded-xl">
-            <Shield className="h-8 w-8 text-violet-400" />
+            <Shield className="h-6 w-6 text-violet-400" />
           </div>
           <div>
-            <span className="text-xl font-bold text-white">AbyssalSecurity</span>
+            <span className="text-lg font-bold text-white">AbyssalSecurity</span>
             <p className="text-xs text-gray-400">Enterprise Portal</p>
           </div>
         </div>
@@ -99,46 +99,46 @@ const Dashboard = () => {
         </button>
       </div>
       
-      <nav className="mt-8 px-4">
-        <ul className="space-y-2">
+      <nav className="mt-6 px-3">
+        <ul className="space-y-1">
           {menuItems.map((item) => (
             <li key={item.label}>
               <Link
                 to={item.href}
-                className={`flex items-center space-x-4 px-4 py-3 rounded-xl transition-all duration-200 ${
+                className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
                   item.active 
                     ? 'bg-gradient-to-r from-violet-500/20 to-cyan-500/20 text-white border border-violet-500/30' 
                     : 'text-gray-300 hover:bg-white/5 hover:text-white'
                 }`}
               >
-                <item.icon className="h-5 w-5" />
-                <span className="font-medium">{item.label}</span>
-                {item.active && <ChevronRight className="h-4 w-4 ml-auto text-violet-400" />}
+                <item.icon className="h-4 w-4" />
+                <span className="text-sm font-medium">{item.label}</span>
+                {item.active && <ChevronRight className="h-3 w-3 ml-auto text-violet-400" />}
               </Link>
             </li>
           ))}
         </ul>
       </nav>
       
-      <div className="absolute bottom-6 left-4 right-4">
-        <div className="p-4 bg-white/5 rounded-xl border border-white/10 mb-4">
-          <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 bg-gradient-to-r from-violet-500 to-cyan-500 rounded-full flex items-center justify-center">
-              <User className="h-5 w-5 text-white" />
+      <div className="absolute bottom-4 left-3 right-3">
+        <div className="p-3 bg-white/5 rounded-lg border border-white/10 mb-3">
+          <div className="flex items-center space-x-2">
+            <div className="h-8 w-8 bg-gradient-to-r from-violet-500 to-cyan-500 rounded-full flex items-center justify-center">
+              <User className="h-4 w-4 text-white" />
             </div>
-            <div>
-              <p className="text-sm font-semibold text-white">{user.username}</p>
-              <p className="text-xs text-gray-400">{user.email}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-white truncate">{user.username}</p>
+              <p className="text-xs text-gray-400 truncate">{user.email}</p>
             </div>
           </div>
         </div>
         <Button
           onClick={handleLogout}
           variant="ghost"
-          className="w-full justify-start text-gray-300 hover:text-white hover:bg-white/5"
+          className="w-full justify-start text-gray-300 hover:text-white hover:bg-white/5 h-9"
         >
-          <LogOut className="h-5 w-5 mr-3" />
-          Sign Out
+          <LogOut className="h-4 w-4 mr-2" />
+          <span className="text-sm">Sign Out</span>
         </Button>
       </div>
     </aside>
@@ -156,7 +156,7 @@ const Dashboard = () => {
         />
       )}
       
-      <div className="lg:ml-72">
+      <div className="lg:ml-64">
         {/* Header */}
         <header className="bg-white/5 backdrop-blur-xl border-b border-white/10 sticky top-0 z-30">
           <div className="flex items-center justify-between h-20 px-4 lg:px-6">
