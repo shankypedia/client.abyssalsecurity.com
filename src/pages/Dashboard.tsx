@@ -182,9 +182,27 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-violet-950 to-gray-900 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDEwIDAgTCA1MCA0MCBNIDAgMTAgTCA0MCA1MCBNIDY2IDEwIEwgNDUgMzAiIHN0cm9rZT0iIzMxMzE0MSIgc3Ryb2tlLXdpZHRoPSIwLjUiIGZpbGw9Im5vbmUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20"></div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-violet-950 to-gray-900 relative overflow-hidden scroll-smooth">
+      {/* Enhanced Background Pattern */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDEwIDAgTCA1MCA0MCBNIDAgMTAgTCA0MCA1MCBNIDY2IDEwIEwgNDUgMzAiIHN0cm9rZT0iIzMxMzE0MSIgc3Ryb2tlLXdpZHRoPSIwLjUiIGZpbGw9Im5vbmUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20 animate-pulse"></div>
+      
+      {/* Floating Particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className={`absolute rounded-full bg-gradient-to-r from-violet-500/10 to-cyan-500/10 animate-float-${i % 3 + 1}`}
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              width: `${Math.random() * 80 + 40}px`,
+              height: `${Math.random() * 80 + 40}px`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${Math.random() * 10 + 15}s`
+            }}
+          />
+        ))}
+      </div>
       
       <Sidebar />
       
@@ -251,15 +269,15 @@ const Dashboard = () => {
           <div className="w-full space-y-4 sm:space-y-6">
             
             {/* Welcome Section */}
-            <div className="bg-gradient-to-r from-violet-500/10 via-cyan-500/10 to-violet-500/10 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
+            <div className="bg-gradient-to-r from-violet-500/10 via-cyan-500/10 to-violet-500/10 rounded-2xl p-6 border border-white/10 backdrop-blur-sm hover:shadow-xl hover:shadow-violet-500/20 transition-all duration-500 animate-fade-in-up hover:scale-[1.02] group">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl xl:text-3xl font-bold text-white mb-3">Welcome back, {user.username}!</h2>
-                  <p className="text-gray-300 text-base xl:text-lg">Your security infrastructure is operating at peak performance.</p>
+                  <h2 className="text-2xl xl:text-3xl font-bold text-white mb-3 bg-gradient-to-r from-white via-gray-200 to-gray-300 bg-clip-text text-transparent animate-shimmer">Welcome back, {user.username}!</h2>
+                  <p className="text-gray-300 text-base xl:text-lg group-hover:text-gray-200 transition-colors duration-300">Your security infrastructure is operating at peak performance.</p>
                 </div>
                 <div className="hidden md:block">
-                  <div className="p-6 bg-white/10 rounded-2xl">
-                    <Shield className="h-16 w-16 text-violet-400" />
+                  <div className="p-6 bg-white/10 rounded-2xl group-hover:bg-white/20 transition-all duration-300 hover:rotate-6 hover:scale-110">
+                    <Shield className="h-16 w-16 text-violet-400 group-hover:text-violet-300 transition-colors duration-300 animate-pulse" />
                   </div>
                 </div>
               </div>
@@ -267,73 +285,73 @@ const Dashboard = () => {
             
             {/* Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+              <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 hover:scale-105 animate-fade-in-up group" style={{ animationDelay: '100ms' }}>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-300">Security Status</p>
-                      <p className="text-2xl font-bold text-green-400 mt-1 capitalize">
+                      <p className="text-sm font-medium text-gray-300 group-hover:text-gray-200 transition-colors">Security Status</p>
+                      <p className="text-2xl font-bold text-green-400 mt-1 capitalize group-hover:text-green-300 transition-colors">
                         {dashboardStats?.securityStatus || 'Secure'}
                       </p>
                     </div>
-                    <div className="p-3 bg-green-500/20 rounded-full">
-                      <CheckCircle className="h-6 w-6 text-green-400" />
+                    <div className="p-3 bg-green-500/20 rounded-full group-hover:bg-green-500/30 group-hover:scale-110 transition-all duration-300">
+                      <CheckCircle className="h-6 w-6 text-green-400 group-hover:rotate-12 transition-transform duration-300" />
                     </div>
                   </div>
                 </CardContent>
               </Card>
               
-              <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+              <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-500/20 transition-all duration-300 hover:scale-105 animate-fade-in-up group" style={{ animationDelay: '200ms' }}>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-300">Active Monitors</p>
-                      <p className="text-2xl font-bold text-white mt-1">
+                      <p className="text-sm font-medium text-gray-300 group-hover:text-gray-200 transition-colors">Active Monitors</p>
+                      <p className="text-2xl font-bold text-white mt-1 group-hover:text-violet-200 transition-colors">
                         {dashboardStats?.activeMonitors || '247'}
                       </p>
                     </div>
-                    <div className="p-3 bg-violet-500/20 rounded-full">
-                      <Activity className="h-6 w-6 text-violet-400" />
+                    <div className="p-3 bg-violet-500/20 rounded-full group-hover:bg-violet-500/30 group-hover:scale-110 transition-all duration-300">
+                      <Activity className="h-6 w-6 text-violet-400 group-hover:animate-pulse" />
                     </div>
                   </div>
                   <div className="flex items-center mt-2">
-                    <TrendingUp className="h-4 w-4 text-green-400 mr-1" />
-                    <span className="text-sm text-green-400">+12% from last week</span>
+                    <TrendingUp className="h-4 w-4 text-green-400 mr-1 group-hover:scale-110 transition-transform" />
+                    <span className="text-sm text-green-400 group-hover:text-green-300 transition-colors">+12% from last week</span>
                   </div>
                 </CardContent>
               </Card>
               
-              <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+              <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-cyan-500/30 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 hover:scale-105 animate-fade-in-up group" style={{ animationDelay: '300ms' }}>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-300">Response Time</p>
-                      <p className="text-2xl font-bold text-white mt-1">
+                      <p className="text-sm font-medium text-gray-300 group-hover:text-gray-200 transition-colors">Response Time</p>
+                      <p className="text-2xl font-bold text-white mt-1 group-hover:text-cyan-200 transition-colors">
                         {dashboardStats?.responseTime || '0.3s'}
                       </p>
                     </div>
-                    <div className="p-3 bg-cyan-500/20 rounded-full">
-                      <BarChart3 className="h-6 w-6 text-cyan-400" />
+                    <div className="p-3 bg-cyan-500/20 rounded-full group-hover:bg-cyan-500/30 group-hover:scale-110 transition-all duration-300">
+                      <BarChart3 className="h-6 w-6 text-cyan-400 group-hover:-rotate-12 transition-transform duration-300" />
                     </div>
                   </div>
-                  <p className="text-sm text-gray-400 mt-2">Optimal performance</p>
+                  <p className="text-sm text-gray-400 mt-2 group-hover:text-gray-300 transition-colors">Optimal performance</p>
                 </CardContent>
               </Card>
               
-              <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+              <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 hover:scale-105 animate-fade-in-up group" style={{ animationDelay: '400ms' }}>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-300">Uptime</p>
-                      <p className="text-2xl font-bold text-white mt-1">
+                      <p className="text-sm font-medium text-gray-300 group-hover:text-gray-200 transition-colors">Uptime</p>
+                      <p className="text-2xl font-bold text-white mt-1 group-hover:text-green-200 transition-colors">
                         {dashboardStats?.uptime || '99.98%'}
                       </p>
                     </div>
-                    <div className="p-3 bg-green-500/20 rounded-full">
-                      <Shield className="h-6 w-6 text-green-400" />
+                    <div className="p-3 bg-green-500/20 rounded-full group-hover:bg-green-500/30 group-hover:scale-110 transition-all duration-300">
+                      <Shield className="h-6 w-6 text-green-400 group-hover:rotate-180 transition-transform duration-500" />
                     </div>
                   </div>
-                  <p className="text-sm text-gray-400 mt-2">Enterprise grade</p>
+                  <p className="text-sm text-gray-400 mt-2 group-hover:text-gray-300 transition-colors">Enterprise grade</p>
                 </CardContent>
               </Card>
             </div>
